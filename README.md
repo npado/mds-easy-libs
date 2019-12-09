@@ -1,2 +1,2 @@
 # mds-utils
-mds utils function
+mds-easy-libs
