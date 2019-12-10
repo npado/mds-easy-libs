@@ -85,13 +85,13 @@ class S3Utils:
 			return False
 
 	@staticmethod
-	def write_json_if_toupdate(s3, json_result, s3_bucket, s3_key):
+	def write_json_if_toupdate(s3, json_result, s3_bucket, s3_key, drop=None):
 		if not S3Utils.json_already_exists(
 				s3,
 				json_result,
 				s3_bucket,
 				s3_key,
-				drop=None
+				drop=drop
 		):
 			S3Utils.write_s3_file(s3, s3_bucket, s3_key, json.dumps(json_result, ensure_ascii=False))
 			return True
