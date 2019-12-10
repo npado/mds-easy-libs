@@ -95,6 +95,23 @@ class MCMHelper:
 		clear_meta_merged = MetadataUtils.merge_lst(common_metas, mcm_clear_meta, mythem_clear_meta, sep=sep)
 
 		mcm_dict[clear_meta_name] = clear_meta_merged
+
+		# idserie, numeroepisodi, numerostagioni non sono presenti in MCM e lo prendiamo da Mythematics
+		# NOTA: MCM+Mythematics vengono logicamente divisi in due parti: una che contiene
+		# dei metadati di descrizione del contenuto (id-video, id-serie, titolo, ecc)
+		# e un'altra parte di metadati veri e propri (mood, generi) che si trova in clearmeta
+		# In questo caso idserie non lo prendiamo da clearmeta ma dai metadati di descrizione
+		# ci dovrebbe essere un metodo distinto che fa questo lavoro: ha in input una lista di
+		# metadati di descrizione (in un file di descrizione) e li attacca a MCM
+		idserie = mythem_dict.get('idserie')
+		if not (idserie is None or idserie.upper() in ['NULL', 'NA']):
+			mcm_dict['idserie'] = idserie
+		if mythem_dict['numeroepisodi'] is not None:
+			mcm_dict['numeroepisodi'] = int(mythem_dict['numeroepisodi'])
+
+		if mythem_dict['numerostagioni'] is not None:
+			mcm_dict['numerostagioni'] = int(mythem_dict['numerostagioni'])
+
 		mcm_dict[fing_name] = MetadataUtils.hashing_meta(clear_meta_merged, sep=sep, bl=self.content_conf['blacklist_metas'])
 		return mcm_dict
 
