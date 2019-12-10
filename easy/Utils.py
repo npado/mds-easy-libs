@@ -47,7 +47,6 @@ class S3Utils:
 		:param key:
 		:param str_file:
 		:return:
-
 		"""
 		w_obj = s3.Object(bucket, key)
 		return w_obj.put(Body=str_file, ensure_ascii=False)
