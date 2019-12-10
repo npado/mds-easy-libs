@@ -35,7 +35,7 @@ class S3Utils:
 		return js_string
 
 	@staticmethod
-	def content_card_already_exists(s3, json_result, s3_bucket, s3_key, drop=None):
+	def json_already_exists(s3, json_result, s3_bucket, s3_key, drop=None):
 		current_ordered_js = Utils.get_ordered_json(json_result, drop=drop)
 
 		try:
@@ -51,11 +51,11 @@ class S3Utils:
 
 class Utils:
 	@staticmethod
-	def ordered(obj):
+	def ordered_obj(obj):
 		if isinstance(obj, dict):
-			return sorted((k, Utils.ordered(v)) for k, v in obj.items())
+			return sorted((k, Utils.ordered_obj(v)) for k, v in obj.items())
 		if isinstance(obj, list):
-			return sorted(Utils.ordered(x) for x in obj)
+			return sorted(Utils.ordered_obj(x) for x in obj)
 		else:
 			return obj
 

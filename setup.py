@@ -4,11 +4,11 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="mds-easy-libs", # Replace with your own username
+    name="mds-easy-libs",
     version="0.0.1",
     author="Nicola Padovano",
     author_email="nicola.padovano@mediaset.it",
-    description="A small example package",
+    description="Mediaset Easy Libraries",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/npado/packaging_tutorial",
