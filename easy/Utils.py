@@ -49,7 +49,7 @@ class S3Utils:
 		:return:
 		"""
 		w_obj = s3.Object(bucket, key)
-		return w_obj.put(Body=str_file, ensure_ascii=False)
+		return w_obj.put(Body=str_file)
 
 	@staticmethod
 	def read_s3_file(s3, bucket, key):
