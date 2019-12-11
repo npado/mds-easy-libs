@@ -19,9 +19,9 @@ class MCMHelper:
 
 		try:
 			self._logger.info(f"Searching {content_id} in MCM from {s3_bucket}/{mcm_key_file}""")
-			mythem_js = json.loads(S3Utils.read_s3_file(self.s3, s3_bucket, mcm_key_file))
+			mcm_js = json.loads(S3Utils.read_s3_file(self.s3, s3_bucket, mcm_key_file))
 			self._logger.info(f'MCM {content_id} found!')
-			return mythem_js
+			return mcm_js
 		except FileNotFoundError:
 			self._logger.info(f'MCM {content_id} NOT found!')
 			return None
@@ -106,6 +106,7 @@ class MCMHelper:
 		idserie = mythem_dict.get('idserie')
 		if not (idserie is None or idserie.upper() in ['NULL', 'NA']):
 			mcm_dict['idserie'] = idserie
+
 		if mythem_dict['numeroepisodi'] is not None:
 			mcm_dict['numeroepisodi'] = int(mythem_dict['numeroepisodi'])
 

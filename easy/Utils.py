@@ -278,5 +278,3 @@ class MetadataUtils:
 		arr = [hashlib.sha256(r.replace(sep, '').encode(encoding)).hexdigest() for r in array if r[:r.index(sep)] not in bl]
 		hashed_lst = sorted(arr)
 		return ' '.join(hashed_lst)
-		# hashed_lst = sorted([hashlib.sha256(r.replace(sep, '').encode(encoding)).hexdigest() for r in array])
-		# return ' '.join(hashed_lst)
