@@ -26,6 +26,19 @@ class MCMHelper:
 			self._logger.info(f'MCM {content_id} NOT found!')
 			return None
 
+	def read_mythem_series_js(self, series_id):
+		mythem_key_file = f"{self.data_conf['s3_mythematics_fingerprint_coll']}/{series_id}.json"
+		s3_bucket = self.data_conf['s3_bucket']
+
+		try:
+			self._logger.info(f"Searching {series_id} in MYTHEMATICS from {s3_bucket}/{mythem_key_file}""")
+			mythem_js = json.loads(S3Utils.read_s3_file(self.s3, s3_bucket, mythem_key_file))
+			self._logger.info(f'MYTHEMATICS SERIES {series_id} found!')
+			return mythem_js
+		except FileNotFoundError:
+			self._logger.info(f'MYTHEMATICS SERIES {series_id} NOT found!')
+			return None
+
 	def read_mythem_js(self, content_id):
 		"""
 		Given an fcode return the dictionary (json) of the corresponding Mythematics len-10-Fcode content
@@ -44,7 +57,7 @@ class MCMHelper:
 			self._logger.info(f'MYTHEMATICS {content_id} NOT found!')
 			return None
 
-	def read_mythem_coll_js(self, fcode):
+	def read_mythem_series_js_from_fcode(self, fcode):
 		"""
 		Given an Fcode this method find the corresponding id-serie retrieving the 8-len
 		Fcode of collection.
@@ -53,7 +66,6 @@ class MCMHelper:
 		"""
 		s3_bucket = self.data_conf['s3_bucket']
 		s3_fcode_serie_map = self.data_conf['fcode_serie_mapping_path']
-		s3_myt_fingerprint_col = self.data_conf['s3_mythematics_fingerprint_coll']
 		self._logger.info(
 			f'Searching {fcode} in MYTHEMATICS collection from '
 			f'{s3_bucket}/{s3_fcode_serie_map}'
@@ -67,7 +79,7 @@ class MCMHelper:
 
 		if idserie is not None:
 			self._logger.info(f'IdSerie {idserie}-{fcode} match found')
-			mythem_js = json.loads(S3Utils.read_s3_file(self.s3, s3_bucket, f'{s3_myt_fingerprint_col}/{idserie}.json'))
+			mythem_js = self.read_mythem_series_js(idserie)
 			self._logger.info(f'MYTHEMATICS {fcode} collection Found!')
 			return mythem_js
 		else:
@@ -124,6 +136,14 @@ class MCMHelper:
 		mcm_js['mythematics-source'] = 'mythematics'
 		return self.merge_mcm_mythem(mythem_js, mcm_js, common_metas, sep=sep)
 
+	def search_mythematics_series(self, series_id, mcm_js, common_metas, sep='='):
+		mythem_js = self.read_mythem_series_js(series_id)
+		if mythem_js is None:
+			return None
+
+		mcm_js['mythematics-source'] = 'mythematics-collection'
+		return self.merge_mcm_mythem(mythem_js, mcm_js, common_metas, sep=sep)
+
 	def search_mythematics_meta(self, fcode, mcm_js, common_metas, sep='='):
 		"""
 
@@ -135,7 +155,7 @@ class MCMHelper:
 		"""
 		mythem_js = self.read_mythem_js(fcode)
 		if mythem_js is None:
-			mythem_js = self.read_mythem_coll_js(fcode)
+			mythem_js = self.read_mythem_series_js_from_fcode(fcode)
 			if mythem_js is None:
 				mcm_js['mythematics-source'] = 'mcm'
 				return mcm_js
