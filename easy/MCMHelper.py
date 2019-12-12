@@ -119,10 +119,10 @@ class MCMHelper:
 		if not (idserie is None or idserie.upper() in ['NULL', 'NA']):
 			mcm_dict['idserie'] = idserie
 
-		if mythem_dict['numeroepisodi'] is not None:
+		if mythem_dict.get('numeroepisodi') is not None:
 			mcm_dict['numeroepisodi'] = int(mythem_dict['numeroepisodi'])
 
-		if mythem_dict['numerostagioni'] is not None:
+		if mythem_dict.get('numerostagioni') is not None:
 			mcm_dict['numerostagioni'] = int(mythem_dict['numerostagioni'])
 
 		mcm_dict[fing_name] = MetadataUtils.hashing_meta(clear_meta_merged, sep=sep, bl=self.content_conf['blacklist_metas'])
