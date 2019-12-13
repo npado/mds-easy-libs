@@ -1,6 +1,10 @@
 from botocore.exceptions import ClientError
 import json
 import hashlib
+from botocore.vendored import requests
+from botocore.vendored.requests.adapters import HTTPAdapter
+from botocore.vendored.requests.packages.urllib3.util.retry import Retry
+
 
 
 class Utils:
@@ -36,6 +40,26 @@ class Utils:
 			js = {k: v for k, v in js.items() if k not in drop}
 
 		return Utils.ordered_obj(js)
+
+	@staticmethod
+	def requests_retry_session(
+			retries=3,
+			backoff_factor=0.3,
+			status_forcelist=(500, 502, 504),
+			session=None,
+	):
+		session = session or requests.Session()
+		retry = Retry(
+			total=retries,
+			read=retries,
+			connect=retries,
+			backoff_factor=backoff_factor,
+			status_forcelist=status_forcelist,
+		)
+		adapter = HTTPAdapter(max_retries=retry)
+		session.mount('http://', adapter)
+		session.mount('https://', adapter)
+		return session
 
 
 class S3Utils:
@@ -98,6 +122,13 @@ class S3Utils:
 
 
 class MetadataUtils:
+	@staticmethod
+	def concat_key_value(key, value, sep='='):
+		if isinstance(value, list):
+			return [f'{key}{sep}{v}' for v in value]
+		else:
+			return f'{key}{sep}{value}'
+
 	@staticmethod
 	def split_meta_value(string, sep='='):
 		metadata = string[:string.index(sep)]
@@ -263,18 +294,19 @@ class MetadataUtils:
 		return sorted(list(set(mcm_clearmeta + mythem_clearmeta)))
 
 	@staticmethod
-	def hashing_meta(array, encoding='utf-8', sep='=', bl=None):
+	def hashing_meta(array, encoding='utf-8', key_value_sep='=', fingerprint_sep=' ', bl=None):
 		"""
 		In questo flusso di Merge il fingerprint viene completamente ricalcolato e non viene fatta una unione
 		tra il fingerprint MCM e quello Mythematics perchè ci sono alcuni metadati in MCM (ad es. people-attore)
 		che devono essere rimpiazzati dai metadati di Mythematics che hanno "precedenza"
 		:param array:
 		:param encoding:
-		:param sep:
+		:param key_value_sep:
+		:param fingerprint_sep:
 		:param bl: blacklist of metadata
 		:return:
 		"""
 		bl = [] if bl is None else bl
-		arr = [hashlib.sha256(r.replace(sep, '').encode(encoding)).hexdigest() for r in array if r[:r.index(sep)] not in bl]
+		arr = [hashlib.sha256(r.replace(key_value_sep, '').encode(encoding)).hexdigest() for r in array if r[:r.index(key_value_sep)] not in bl]
 		hashed_lst = sorted(arr)
-		return ' '.join(hashed_lst)
+		return fingerprint_sep.join(hashed_lst)

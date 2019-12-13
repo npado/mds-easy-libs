@@ -165,3 +165,37 @@ class MCMHelper:
 			mcm_js['mythematics-source'] = 'mythematics'
 
 		return self.merge_mcm_mythem(mythem_js, mcm_js, common_metas, sep=sep)
+
+	@staticmethod
+	def get_meta_info(default, values):
+		if not isinstance(values, list):
+			values = [values]
+
+		results = []
+		for value in values:
+			default = default.copy()
+			result_dict = {}
+			if isinstance(value, str):
+				result_dict['key'] = value
+			elif isinstance(value, dict):
+				result_dict = value
+
+			for k, v in result_dict.items():
+				default[k] = v
+
+			results.append(default)
+
+		keys = [r['key'] for r in results]
+		if any(keys.count(k) > 1 for k in keys):
+			raise ValueError(f'Duplicates keys in configuration json {values}')
+
+		return results
+
+	@staticmethod
+	def get_meta_key_from_conf(meta_conf, xml_tag):
+		k = meta_conf[xml_tag]
+		if isinstance(k, dict):
+			return k['key']
+		elif isinstance(k, str):
+			return k
+
