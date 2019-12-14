@@ -3,6 +3,7 @@ import json
 import hashlib
 from botocore.vendored import requests
 from botocore.vendored.requests.adapters import HTTPAdapter
+# from requests.adapters import HTTPAdapter
 from botocore.vendored.requests.packages.urllib3.util.retry import Retry
 
 
