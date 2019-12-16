@@ -125,7 +125,7 @@ class MCMHelper:
 		if mythem_dict.get('numerostagioni') is not None:
 			mcm_dict['numerostagioni'] = int(mythem_dict['numerostagioni'])
 
-		mcm_dict[fing_name] = MetadataUtils.hashing_meta(clear_meta_merged, sep=sep, bl=self.content_conf['blacklist_metas'])
+		mcm_dict[fing_name] = MetadataUtils.hashing_meta(clear_meta_merged, key_value_sep=sep, bl=self.content_conf['blacklist_metas'])
 		return mcm_dict
 
 	def search_mcm_meta(self, fcode, mythem_js, common_metas, sep='='):
