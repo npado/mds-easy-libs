@@ -128,7 +128,7 @@ class MCMHelper:
 		mcm_dict[fing_name] = MetadataUtils.hashing_meta(clear_meta_merged, key_value_sep=sep, bl=self.content_conf['blacklist_metas'])
 		return mcm_dict
 
-	def search_mcm_meta(self, fcode, mythem_js, common_metas, sep='='):
+	def search_mcm_season_meta(self, fcode, mythem_js, common_metas, sep='='):
 		mcm_js = self.read_mcm_content_season(fcode)
 		if mcm_js is None:
 			return None
