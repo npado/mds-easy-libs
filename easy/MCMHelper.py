@@ -20,10 +20,23 @@ class MCMHelper:
 		try:
 			self._logger.info(f"Searching {content_id} in MCM from {s3_bucket}/{mcm_key_file}""")
 			mcm_js = json.loads(S3Utils.read_s3_file(self.s3, s3_bucket, mcm_key_file))
-			self._logger.info(f'MCM {content_id} found!')
+			self._logger.info(f'MCM season {content_id} found!')
 			return mcm_js
 		except FileNotFoundError:
-			self._logger.info(f'MCM {content_id} NOT found!')
+			self._logger.info(f'MCM season {content_id} NOT found!')
+			return None
+
+	def read_mcm_content_series(self, content_id):
+		mcm_key_file = f"{self.data_conf['s3_mcm_series']}/{content_id}.json"
+		s3_bucket = self.data_conf['s3_bucket']
+
+		try:
+			self._logger.info(f"Searching {content_id} in MCM from {s3_bucket}/{mcm_key_file}""")
+			mcm_js = json.loads(S3Utils.read_s3_file(self.s3, s3_bucket, mcm_key_file))
+			self._logger.info(f'MCM series {content_id} found!')
+			return mcm_js
+		except FileNotFoundError:
+			self._logger.info(f'MCM series {content_id} NOT found!')
 			return None
 
 	def read_mythem_series_js(self, series_id):
@@ -135,6 +148,15 @@ class MCMHelper:
 
 		mcm_js['mythematics-source'] = 'mythematics'
 		return self.merge_mcm_mythem(mythem_js, mcm_js, common_metas, sep=sep)
+
+	def search_mcm_series_meta(self, series_id, js, common_metas, sep='='):
+		mcm_js = self.read_mcm_content_series(series_id)
+
+		if mcm_js is None:
+			return None
+
+		mcm_js['mythematics-source'] = 'mythematics-collection'
+		return self.merge_mcm_mythem(mcm_js, mcm_js, common_metas, sep=sep)
 
 	def search_mythematics_series(self, series_id, mcm_js, common_metas, sep='='):
 		mythem_js = self.read_mythem_series_js(series_id)
