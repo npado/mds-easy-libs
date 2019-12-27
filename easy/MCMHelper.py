@@ -144,7 +144,7 @@ class MCMHelper:
 	def search_mcm_season_meta(self, fcode, mythem_js, common_metas, sep='='):
 		mcm_js = self.read_mcm_content_season(fcode)
 		if mcm_js is None:
-			return None
+			return mythem_js
 
 		mcm_js['mythematics-source'] = 'mythematics'
 		return self.merge_mcm_mythem(mythem_js, mcm_js, common_metas, sep=sep)
@@ -153,7 +153,7 @@ class MCMHelper:
 		mcm_js = self.read_mcm_content_series(series_id)
 
 		if mcm_js is None:
-			return None
+			return mythem_js
 
 		mcm_js['mythematics-source'] = 'mythematics-collection'
 		return self.merge_mcm_mythem(mythem_js, mcm_js, common_metas, sep=sep)
@@ -161,7 +161,7 @@ class MCMHelper:
 	def search_mythematics_series(self, series_id, mcm_js, common_metas, sep='='):
 		mythem_js = self.read_mythem_series_js(series_id)
 		if mythem_js is None:
-			return None
+			return mcm_js
 
 		mcm_js['mythematics-source'] = 'mythematics-collection'
 		return self.merge_mcm_mythem(mythem_js, mcm_js, common_metas, sep=sep)
