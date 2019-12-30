@@ -221,3 +221,20 @@ class MCMHelper:
 		elif isinstance(k, str):
 			return k
 
+	def fd_to_fcode(self, fd_code):
+		"""
+
+		:param fd_code: fd code
+		:return: fcode
+		"""
+		s3_bucket = self.data_conf['s3_bucket']
+		s3_fdf_mapping = self.data_conf['s3_fdf_mapping']
+		fd_mapping = json.loads(S3Utils.read_s3_file(self.s3, s3_bucket, s3_fdf_mapping))
+		return fd_mapping['fcode'].get(fd_code, None)
+
+	def f_to_fdcode(self, fcode):
+		s3_bucket = self.data_conf['s3_bucket']
+		s3_ffd_mapping = self.data_conf['s3_ffd_mapping']
+
+		fd_mapping = json.loads(S3Utils.read_s3_file(self.s3, s3_bucket, s3_ffd_mapping))
+		return fd_mapping['video_content_ids'].get(fcode, None)
