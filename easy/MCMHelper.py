@@ -40,7 +40,7 @@ class MCMHelper:
 			return None
 
 	def read_mythem_series_js(self, series_id):
-		mythem_key_file = f"{self.data_conf['s3_mythematics_fingerprint_coll']}/{series_id}.json"
+		mythem_key_file = f"{self.data_conf['s3_mythematics_series_fingerprint']}/{series_id}.json"
 		s3_bucket = self.data_conf['s3_bucket']
 
 		try:
