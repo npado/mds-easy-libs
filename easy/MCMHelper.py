@@ -44,12 +44,25 @@ class MCMHelper:
 		s3_bucket = self.data_conf['s3_bucket']
 
 		try:
-			self._logger.info(f"Searching {series_id} in MYTHEMATICS from {s3_bucket}/{mythem_key_file}""")
+			self._logger.info(f"Searching series {series_id} in MYTHEMATICS from {s3_bucket}/{mythem_key_file}""")
 			mythem_js = json.loads(S3Utils.read_s3_file(self.s3, s3_bucket, mythem_key_file))
 			self._logger.info(f'MYTHEMATICS SERIES {series_id} found!')
 			return mythem_js
 		except FileNotFoundError:
 			self._logger.info(f'MYTHEMATICS SERIES {series_id} NOT found!')
+			return None
+
+	def read_mythem_season_js(self, season_id):
+		mythem_key_file = f"{self.data_conf['s3_mythematics_season_fingerprint']}/{season_id}.json"
+		s3_bucket = self.data_conf['s3_bucket']
+
+		try:
+			self._logger.info(f"Searching season {season_id} in MYTHEMATICS from {s3_bucket}/{mythem_key_file}""")
+			mythem_js = json.loads(S3Utils.read_s3_file(self.s3, s3_bucket, mythem_key_file))
+			self._logger.info(f'MYTHEMATICS SEASON {season_id} found!')
+			return mythem_js
+		except FileNotFoundError:
+			self._logger.info(f'MYTHEMATICS SEASON {season_id} NOT found!')
 			return None
 
 	def read_mythem_js(self, content_id):
@@ -72,31 +85,30 @@ class MCMHelper:
 
 	def read_mythem_series_js_from_fcode(self, fcode):
 		"""
-		Given an Fcode this method find the corresponding id-serie retrieving the 8-len
-		Fcode of collection.
+		Given an Fcode this method find the corresponding id-series
 		:param fcode:
 		:return:
 		"""
 		s3_bucket = self.data_conf['s3_bucket']
 		s3_fcode_serie_map = self.data_conf['fcode_serie_mapping_path']
 		self._logger.info(
-			f'Searching {fcode} in MYTHEMATICS collection from '
+			f'Searching {fcode} in MYTHEMATICS series from '
 			f'{s3_bucket}/{s3_fcode_serie_map}'
 		)
 		try:
 			fcode_serie_map = json.loads(S3Utils.read_s3_file(self.s3, s3_bucket, s3_fcode_serie_map))
 			idserie = fcode_serie_map['idserie'].get(fcode)
 		except FileNotFoundError:
-			self._logger.info(f'MYTHEMATICS {fcode} collection NOT found: file {s3_bucket}/{s3_fcode_serie_map} not found')
+			self._logger.info(f'MYTHEMATICS {fcode} series NOT found: file {s3_bucket}/{s3_fcode_serie_map} not found')
 			return None
 
 		if idserie is not None:
 			self._logger.info(f'IdSerie {idserie}-{fcode} match found')
 			mythem_js = self.read_mythem_series_js(idserie)
-			self._logger.info(f'MYTHEMATICS {fcode} collection Found!')
+			self._logger.info(f'MYTHEMATICS {fcode} series Found!')
 			return mythem_js
 		else:
-			self._logger.info(f'MYTHEMATICS {fcode} collection NOT found!')
+			self._logger.info(f'MYTHEMATICS {fcode} series NOT found!')
 			return None
 
 	def merge_mcm_mythem(self, mythem_dict, mcm_dict, common_metas, sep='='):
@@ -155,7 +167,7 @@ class MCMHelper:
 		if mcm_js is None:
 			return None
 
-		mcm_js['mythematics-source'] = 'mythematics-collection'
+		mcm_js['mythematics-source'] = 'mythematics-series'
 		return self.merge_mcm_mythem(mythem_js, mcm_js, common_metas, sep=sep)
 
 	def search_mythematics_series(self, series_id, mcm_js, common_metas, sep='='):
@@ -163,7 +175,15 @@ class MCMHelper:
 		if mythem_js is None:
 			return mcm_js
 
-		mcm_js['mythematics-source'] = 'mythematics-collection'
+		mcm_js['mythematics-source'] = 'mythematics-series'
+		return self.merge_mcm_mythem(mythem_js, mcm_js, common_metas, sep=sep)
+
+	def search_mythematics_season(self, season_id, mcm_js, common_metas, sep='='):
+		mythem_js = self.read_mythem_season_js(season_id)
+		if mythem_js is None:
+			return mcm_js
+
+		mcm_js['mythematics-source'] = 'mythematics-season'
 		return self.merge_mcm_mythem(mythem_js, mcm_js, common_metas, sep=sep)
 
 	def search_mythematics_meta(self, fcode, mcm_js, common_metas, sep='='):
@@ -177,12 +197,16 @@ class MCMHelper:
 		"""
 		mythem_js = self.read_mythem_js(fcode)
 		if mythem_js is None:
-			mythem_js = self.read_mythem_series_js_from_fcode(fcode)
+			mythem_js = self.read_mythem_season_js(fcode)
 			if mythem_js is None:
-				mcm_js['mythematics-source'] = 'mcm'
-				return mcm_js
+				mythem_js = self.read_mythem_series_js_from_fcode(fcode)
+				if mythem_js is None:
+					mcm_js['mythematics-source'] = 'mcm'
+					return mcm_js
+				else:
+					mcm_js['mythematics-source'] = 'mythematics-series'
 			else:
-				mcm_js['mythematics-source'] = 'mythematics-collection'
+				mcm_js['mythematics-source'] = 'mythematics-season'
 		else:
 			mcm_js['mythematics-source'] = 'mythematics'
 
