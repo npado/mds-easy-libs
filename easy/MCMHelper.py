@@ -138,7 +138,8 @@ class MCMHelper:
 		# dei metadati di descrizione del contenuto (id-video, id-serie, titolo, ecc)
 		# e un'altra parte di metadati veri e propri (mood, generi) che si trova in clearmeta
 		# In questo caso idserie non lo prendiamo da clearmeta ma dai metadati di descrizione
-		# ci dovrebbe essere un metodo distinto che fa questo lavoro: ha in input una lista di
+
+		# --->Ci dovrebbe essere un metodo distinto che fa questo lavoro: ha in input una lista di
 		# metadati di descrizione (in un file di descrizione) e li attacca a MCM
 		idserie = mythem_dict.get('idserie')
 		if not (idserie is None or idserie.upper() in ['NULL', 'NA']):
@@ -149,6 +150,9 @@ class MCMHelper:
 
 		if mythem_dict.get('numerostagioni') is not None:
 			mcm_dict['numerostagioni'] = int(mythem_dict['numerostagioni'])
+
+		if mythem_dict.get('sottotipologia') is not None:
+			mcm_dict['sottotipologia'] = int(mythem_dict['sottotipologia'])
 
 		mcm_dict[fing_name] = MetadataUtils.hashing_meta(clear_meta_merged, key_value_sep=sep, bl=self.content_conf['blacklist_metas'])
 		return mcm_dict
