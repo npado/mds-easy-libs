@@ -152,7 +152,7 @@ class MCMHelper:
 			mcm_dict['numerostagioni'] = int(mythem_dict['numerostagioni'])
 
 		if mythem_dict.get('sottotipologia') is not None:
-			mcm_dict['sottotipologia'] = int(mythem_dict['sottotipologia'])
+			mcm_dict['sottotipologia'] = mythem_dict['sottotipologia']
 
 		mcm_dict[fing_name] = MetadataUtils.hashing_meta(clear_meta_merged, key_value_sep=sep, bl=self.content_conf['blacklist_metas'])
 		return mcm_dict
