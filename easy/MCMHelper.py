@@ -177,6 +177,7 @@ class MCMHelper:
 	def search_mythematics_series(self, series_id, mcm_js, common_metas, sep='='):
 		mythem_js = self.read_mythem_series_js(series_id)
 		if mythem_js is None:
+			mcm_js['mythematics-source'] = 'mcm'
 			return mcm_js
 
 		mcm_js['mythematics-source'] = 'mythematics-series'
@@ -185,6 +186,7 @@ class MCMHelper:
 	def search_mythematics_season(self, season_id, mcm_js, common_metas, sep='='):
 		mythem_js = self.read_mythem_season_js(season_id)
 		if mythem_js is None:
+			mcm_js['mythematics-source'] = 'mcm'
 			return mcm_js
 
 		mcm_js['mythematics-source'] = 'mythematics-season'
@@ -215,6 +217,24 @@ class MCMHelper:
 			mcm_js['mythematics-source'] = 'mythematics'
 
 		return self.merge_mcm_mythem(mythem_js, mcm_js, common_metas, sep=sep)
+
+	def fd_to_fcode(self, fd_code):
+		"""
+
+		:param fd_code: fd code
+		:return: fcode
+		"""
+		s3_bucket = self.data_conf['s3_bucket']
+		s3_fdf_mapping = self.data_conf['s3_fdf_mapping']
+		fd_mapping = json.loads(S3Utils.read_s3_file(self.s3, s3_bucket, s3_fdf_mapping))
+		return fd_mapping['fcode'].get(fd_code, None)
+
+	def f_to_fdcode(self, fcode):
+		s3_bucket = self.data_conf['s3_bucket']
+		s3_ffd_mapping = self.data_conf['s3_ffd_mapping']
+
+		fd_mapping = json.loads(S3Utils.read_s3_file(self.s3, s3_bucket, s3_ffd_mapping))
+		return fd_mapping['video_content_ids'].get(fcode, None)
 
 	@staticmethod
 	def get_meta_info(default, values):
@@ -248,21 +268,3 @@ class MCMHelper:
 			return k['key']
 		elif isinstance(k, str):
 			return k
-
-	def fd_to_fcode(self, fd_code):
-		"""
-
-		:param fd_code: fd code
-		:return: fcode
-		"""
-		s3_bucket = self.data_conf['s3_bucket']
-		s3_fdf_mapping = self.data_conf['s3_fdf_mapping']
-		fd_mapping = json.loads(S3Utils.read_s3_file(self.s3, s3_bucket, s3_fdf_mapping))
-		return fd_mapping['fcode'].get(fd_code, None)
-
-	def f_to_fdcode(self, fcode):
-		s3_bucket = self.data_conf['s3_bucket']
-		s3_ffd_mapping = self.data_conf['s3_ffd_mapping']
-
-		fd_mapping = json.loads(S3Utils.read_s3_file(self.s3, s3_bucket, s3_ffd_mapping))
-		return fd_mapping['video_content_ids'].get(fcode, None)
