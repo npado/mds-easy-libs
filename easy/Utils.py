@@ -311,7 +311,7 @@ class MetadataUtils:
 		"""
 		bl = [] if bl is None else bl
 		arr = [
-			MetadataUtils.hash_algo(r.replace(key_value_sep, ''), encoding)
+			MetadataUtils.hash_algo(r.replace(key_value_sep, '', 1), encoding)
 			for r in array if r[:r.index(key_value_sep)] not in bl
 		]
 		hashed_lst = sorted(arr)
