@@ -205,7 +205,7 @@ class MCMHelper:
 		if mythem_js is None:
 			mythem_js = self.read_mythem_season_js(fcode)
 			if mythem_js is None:
-				mythem_js = self.read_mythem_series_js_from_fcode(fcode)
+				mythem_js = None # self.read_mythem_series_js_from_fcode(fcode)
 				if mythem_js is None:
 					mcm_js['mythematics-source'] = 'mcm'
 					return mcm_js
