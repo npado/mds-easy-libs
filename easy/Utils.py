@@ -293,6 +293,10 @@ class MetadataUtils:
 		return sorted(list(set(mcm_clearmeta + mythem_clearmeta)))
 
 	@staticmethod
+	def hash_algo(r, encoding):
+		return hashlib.md5(r.encode(encoding)).hexdigest()
+
+	@staticmethod
 	def hashing_meta(array, encoding='utf-8', key_value_sep='=', fingerprint_sep=' ', bl=None):
 		"""
 		In questo flusso di Merge il fingerprint viene completamente ricalcolato e non viene fatta una unione
@@ -306,6 +310,9 @@ class MetadataUtils:
 		:return:
 		"""
 		bl = [] if bl is None else bl
-		arr = [hashlib.sha256(r.replace(key_value_sep, '').encode(encoding)).hexdigest() for r in array if r[:r.index(key_value_sep)] not in bl]
+		arr = [
+			MetadataUtils.hash_algo(r.replace(key_value_sep, ''), encoding)
+			for r in array if r[:r.index(key_value_sep)] not in bl
+		]
 		hashed_lst = sorted(arr)
 		return fingerprint_sep.join(hashed_lst)
