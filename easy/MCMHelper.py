@@ -126,10 +126,18 @@ class MCMHelper:
 		clear_meta_name = self.content_conf['ClearMetadata']
 		fing_name = self.content_conf['Fingerprint']
 
+		blacklist_meta = self.content_conf['blacklist_metas']
+		blacklist_metavalue = self.content_conf['blacklist_metavalues']
+
 		mythem_clear_meta = mythem_dict[clear_meta_name]
 		mcm_clear_meta = mcm_dict[clear_meta_name]
 
 		clear_meta_merged = MetadataUtils.merge_lst(common_metas, mcm_clear_meta, mythem_clear_meta, sep=sep)
+
+		clear_meta_merged = [
+			m for m in clear_meta_merged
+			if m[:m.index(sep)] not in blacklist_meta and m not in blacklist_metavalue
+		]
 
 		mcm_dict[clear_meta_name] = clear_meta_merged
 
@@ -154,7 +162,7 @@ class MCMHelper:
 		if mythem_dict.get('sottotipologia') is not None:
 			mcm_dict['sottotipologia'] = mythem_dict['sottotipologia']
 
-		mcm_dict[fing_name] = MetadataUtils.hashing_meta(clear_meta_merged, key_value_sep=sep, bl=self.content_conf['blacklist_metas'])
+		mcm_dict[fing_name] = MetadataUtils.hashing_meta(clear_meta_merged, key_value_sep=sep)
 		return mcm_dict
 
 	def search_mcm_season_meta(self, fcode, mythem_js, common_metas, sep='='):

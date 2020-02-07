@@ -294,7 +294,7 @@ class MetadataUtils:
 
 	@staticmethod
 	def hash_algo(r, encoding):
-		return hashlib.sha256(r.encode(encoding)).hexdigest()
+		return hashlib.md5(r.encode(encoding)).hexdigest()
 
 	@staticmethod
 	def hashing_meta(array, encoding='utf-8', key_value_sep='=', fingerprint_sep=' ', bl=None):
