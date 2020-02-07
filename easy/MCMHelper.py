@@ -136,7 +136,7 @@ class MCMHelper:
 
 		clear_meta_merged = [
 			m for m in clear_meta_merged
-			if m[m.index(sep)+1:] not in blacklist_meta and m not in blacklist_metavalue
+			if m[:m.index(sep)] not in blacklist_meta and m[m.index(sep)+1:] not in blacklist_metavalue
 		]
 
 		mcm_dict[clear_meta_name] = clear_meta_merged
