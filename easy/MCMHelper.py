@@ -5,9 +5,8 @@ from easy.Utils import S3Utils, MetadataUtils
 
 
 class MCMHelper:
-	def __init__(self, s3, conf):
-		self.data_conf = conf['data-conf']['s3']
-		self.slack_conf = conf['slack']
+	def __init__(self, s3, data_conf, conf):
+		self.data_conf = data_conf
 		self.content_conf = conf['content-conf']
 
 		self.s3 = s3
