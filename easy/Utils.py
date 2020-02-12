@@ -167,9 +167,10 @@ class MetadataUtils:
 			return ret
 		else:
 			return ret[0]
+
 	@staticmethod
 	def isin(value, array):
-		return any(bool([re.match(a, value) for a in array]))
+		return any([bool(re.match(a, value)) for a in array])
 
 	@staticmethod
 	def get_clear_meta_dict(lst, blacklist=None, sep='=', array_list=None):
