@@ -228,7 +228,7 @@ class MetadataUtils:
 			if l in cols_number:
 				val = int(val)
 
-			if not isinstance(val, list) and MetadataUtils.isin(val, array_list):
+			if not isinstance(val, list) and MetadataUtils.isin(l, array_list):
 				val = [val]
 
 			res_dict[l] = val
