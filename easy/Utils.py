@@ -4,7 +4,7 @@ import hashlib
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-
+import re
 
 class Utils:
 	@staticmethod
@@ -167,6 +167,9 @@ class MetadataUtils:
 			return ret
 		else:
 			return ret[0]
+	@staticmethod
+	def isin(value, array):
+		return any(bool([re.match(a, value) for a in array]))
 
 	@staticmethod
 	def get_clear_meta_dict(lst, blacklist=None, sep='=', array_list=None):
@@ -218,12 +221,13 @@ class MetadataUtils:
 			"ritmodelracconto",
 			"numeroepisodi"
 		]
+
 		for l in metas:
 			val = MetadataUtils.get_meta_value(l, lst, sep=sep)
 			if l in cols_number:
 				val = int(val)
 
-			if not isinstance(val, list) and l in array_list:
+			if not isinstance(val, list) and MetadataUtils.isin(val, array_list):
 				val = [val]
 
 			res_dict[l] = val
