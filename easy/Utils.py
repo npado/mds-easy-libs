@@ -169,7 +169,7 @@ class MetadataUtils:
 			return ret[0]
 
 	@staticmethod
-	def get_clear_meta_dict(lst, blacklist=None, sep='='):
+	def get_clear_meta_dict(lst, blacklist=None, sep='=', array_list=None):
 		"""
 		TODO: questo metodo serve a "raggruppare" i metadati per chiavi creando
 			una lista di valori. Il flusso MythematicsFingerprint, in realtà, già
@@ -223,6 +223,9 @@ class MetadataUtils:
 			val = MetadataUtils.get_meta_value(l, lst, sep=sep)
 			if l in cols_number:
 				val = int(val)
+
+			if not isinstance(val, list) and l in array_list:
+				val = [val]
 
 			res_dict[l] = val
 
