@@ -207,7 +207,6 @@ class MetadataUtils:
 			metas = [i for i in metas if i not in blacklist]
 
 		cols_number = [
-			"annoproduzione",
 			"productionvalue",
 			"realismocontenuto",
 			"durataepisodi",
