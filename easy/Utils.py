@@ -285,6 +285,7 @@ class MetadataUtils:
 			"umorismo",
 			"violenza",
 			"ritmodelracconto",
+			'realismorappresentazione',
 			"numeroepisodi"
 		]
 
