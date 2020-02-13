@@ -12,7 +12,8 @@ import validators
 class Utils:
 	@staticmethod
 	def isin(value, array):
-		return any([bool(re.match(a, value)) for a in array])
+		array = [a.upper() for a in array]
+		return any([bool(re.match(a, value.upper())) for a in array])
 
 	@staticmethod
 	def ordered_obj(obj):
@@ -115,10 +116,8 @@ class Utils:
 
 		if key_blacklist is None:
 			key_blacklist = []
-		else:
-			key_blacklist = [k.upper() for k in key_blacklist]
 
-		items = {k: v for k, v in dct.items() if Utils.isin(k.upper(), key_blacklist)}
+		items = {k: v for k, v in dct.items() if Utils.isin(k, key_blacklist)}
 
 		for k, value in items:
 			if isinstance(value, str):
