@@ -110,6 +110,31 @@ class MCMHelper:
 			self._logger.info(f'MYTHEMATICS {fcode} series NOT found!')
 			return None
 
+	@staticmethod
+	def get_myth_info_metas(mcm_dict, mythem_dict):
+		mcm_dict = mcm_dict.copy()
+
+		idserie = mythem_dict.get('idserie')
+		if not (idserie is None or idserie.upper() in ['NULL', 'NA']):
+			mcm_dict['idserie'] = idserie
+
+		if mythem_dict.get('numeroepisodi') is not None:
+			mcm_dict['numeroepisodi'] = int(mythem_dict['numeroepisodi'])
+
+		if mythem_dict.get('numerostagioni') is not None:
+			mcm_dict['numerostagioni'] = int(mythem_dict['numerostagioni'])
+
+		if mythem_dict.get('sottotipologia') is not None:
+			mcm_dict['sottotipologia'] = mythem_dict['sottotipologia']
+
+		if mythem_dict.get('linkwikipedia') is not None:
+			mcm_dict['linkwikipedia'] = mythem_dict['linkwikipedia']
+
+		if mythem_dict.get('collegamentoimdb') is not None:
+			mcm_dict['collegamentoimdb'] = mythem_dict['collegamentoimdb']
+
+		return mcm_dict
+
 	def merge_mcm_mythem(self, mythem_dict, mcm_dict, common_metas, sep='='):
 		"""
 		Given the dictionary of Mythematics and the dictionary of MCM
@@ -146,20 +171,7 @@ class MCMHelper:
 		# e un'altra parte di metadati veri e propri (mood, generi) che si trova in clearmeta
 		# In questo caso idserie non lo prendiamo da clearmeta ma dai metadati di descrizione
 
-		# --->Ci dovrebbe essere un metodo distinto che fa questo lavoro: ha in input una lista di
-		# metadati di descrizione (in un file di descrizione) e li attacca a MCM
-		idserie = mythem_dict.get('idserie')
-		if not (idserie is None or idserie.upper() in ['NULL', 'NA']):
-			mcm_dict['idserie'] = idserie
-
-		if mythem_dict.get('numeroepisodi') is not None:
-			mcm_dict['numeroepisodi'] = int(mythem_dict['numeroepisodi'])
-
-		if mythem_dict.get('numerostagioni') is not None:
-			mcm_dict['numerostagioni'] = int(mythem_dict['numerostagioni'])
-
-		if mythem_dict.get('sottotipologia') is not None:
-			mcm_dict['sottotipologia'] = mythem_dict['sottotipologia']
+		mcm_dict = MCMHelper.get_myth_info_metas(mcm_dict, mythem_dict)
 
 		mcm_dict[fing_name] = MetadataUtils.hashing_meta(clear_meta_merged, key_value_sep=sep)
 		return mcm_dict
