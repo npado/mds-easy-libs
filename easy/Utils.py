@@ -106,9 +106,15 @@ class Utils:
 			return Utils.compact_string(string)
 
 	@staticmethod
-	def normalize_json(dct):
+	def normalize_json(dct, key_blacklist=None):
 		dct = dct.copy()
-		for k, value in dct.items():
+
+		if key_blacklist is None:
+			key_blacklist = []
+
+		items = {k: v for k, v in dct.items() if k.upper() not in key_blacklist}
+
+		for k, value in items:
 			if isinstance(value, str):
 				dct[k] = Utils.normalize_value(value)
 			elif isinstance(value, list):
