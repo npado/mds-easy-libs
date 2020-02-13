@@ -5,6 +5,9 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 import re
+import datetime
+import validators
+
 
 class Utils:
 	@staticmethod
@@ -59,6 +62,60 @@ class Utils:
 		session.mount('http://', adapter)
 		session.mount('https://', adapter)
 		return session
+
+	@staticmethod
+	def remove_special_char(string, replace_char):
+		return re.sub('[^A-Za-z0-9 ]', replace_char, string)
+
+	@staticmethod
+	def camel_case(string):
+		return ''.join([s.capitalize() for s in string.lower().split(' ')])
+
+	@staticmethod
+	def to_bool(string):
+		if string.upper() in ['Y', 'S', 'SI', 'YES']:
+			return True
+		elif string.upper() in ['N', 'NO']:
+			return False
+		else:
+			return string
+
+	@staticmethod
+	def compact_string(string):
+		return Utils.to_bool(
+			Utils.camel_case(Utils.remove_special_char(string.strip(), ' '))
+		)
+
+	@staticmethod
+	def is_date(string, date_format='%Y-%m-%dT%H:%M:%SZ'):
+		try:
+			datetime.datetime.strptime(string, date_format)
+		except ValueError:
+			return False
+		return True
+
+	@staticmethod
+	def is_url(string):
+		return validators.url(string)
+
+	@staticmethod
+	def normalize_value(string):
+		if Utils.is_url(string) or Utils.is_date(string):
+			return string
+		else:
+			return Utils.compact_string(string)
+
+	@staticmethod
+	def normalize_json(dct):
+		dct = dct.copy()
+		for k, value in dct.items():
+			if isinstance(value, str):
+				dct[k] = Utils.normalize_value(value)
+			elif isinstance(value, list):
+				dct[k] = [Utils.normalize_value(v) if isinstance(v, str) else v for v in value]
+			elif isinstance(value, dict):
+				Utils.normalize_json(value)
+		return dct
 
 
 class S3Utils:
