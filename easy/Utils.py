@@ -117,7 +117,7 @@ class Utils:
 		if key_blacklist is None:
 			key_blacklist = []
 
-		dct_blacklisted = {k: v for k, v in dct.items() if Utils.isin(k, key_blacklist)}
+		dct_blacklisted = {k: v for k, v in dct.items() if not Utils.isin(k, key_blacklist)}
 
 		for k, value in dct_blacklisted.items():
 			if isinstance(value, str):
