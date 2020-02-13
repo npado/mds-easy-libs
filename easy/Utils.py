@@ -305,10 +305,6 @@ class MetadataUtils:
 
 		for l in metas:
 			val = MetadataUtils.get_meta_value(l, lst, cols_number, sep=sep)
-			if l in cols_number:
-				val = int(val)
-			elif val.upper() in ['FALSE', 'TRUE']:
-				val = bool(eval(val.capitalize()))
 
 			if not isinstance(val, list) and Utils.isin(l, array_list):
 				val = [val]
