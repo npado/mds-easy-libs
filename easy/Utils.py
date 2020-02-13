@@ -237,7 +237,6 @@ class MetadataUtils:
 		else:
 			return ret[0]
 
-
 	@staticmethod
 	def get_clear_meta_dict(lst, blacklist=None, sep='=', array_list=None):
 		"""
