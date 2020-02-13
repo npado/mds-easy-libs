@@ -11,6 +11,10 @@ import validators
 
 class Utils:
 	@staticmethod
+	def isin(value, array):
+		return any([bool(re.match(a, value)) for a in array])
+
+	@staticmethod
 	def ordered_obj(obj):
 		if isinstance(obj, dict):
 			return sorted((k, Utils.ordered_obj(v)) for k, v in obj.items())
@@ -111,8 +115,10 @@ class Utils:
 
 		if key_blacklist is None:
 			key_blacklist = []
+		else:
+			key_blacklist = [k.upper() for k in key_blacklist]
 
-		items = {k: v for k, v in dct.items() if k.upper() not in key_blacklist}
+		items = {k: v for k, v in dct.items() if Utils.isin(k.upper(), key_blacklist)}
 
 		for k, value in items:
 			if isinstance(value, str):
@@ -231,9 +237,6 @@ class MetadataUtils:
 		else:
 			return ret[0]
 
-	@staticmethod
-	def isin(value, array):
-		return any([bool(re.match(a, value)) for a in array])
 
 	@staticmethod
 	def get_clear_meta_dict(lst, blacklist=None, sep='=', array_list=None):
@@ -291,7 +294,7 @@ class MetadataUtils:
 			if l in cols_number:
 				val = int(val)
 
-			if not isinstance(val, list) and MetadataUtils.isin(l, array_list):
+			if not isinstance(val, list) and Utils.isin(l, array_list):
 				val = [val]
 
 			res_dict[l] = val
