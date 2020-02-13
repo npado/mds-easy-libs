@@ -125,8 +125,12 @@ class Utils:
 			elif isinstance(value, list):
 				dct[k] = [Utils.normalize_value(v) if isinstance(v, str) else v for v in value]
 			elif isinstance(value, dict):
-				Utils.normalize_json(value)
+				dct[k] = Utils.normalize_json(value)
 		return dct
+
+	@staticmethod
+	def normalize_clear_metas_list(clear_metas):
+		return [f"{c.split('=')[0]}={Utils.normalize_value(c.split('=')[1])}" for c in clear_metas]
 
 
 class S3Utils:
