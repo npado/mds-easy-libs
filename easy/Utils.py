@@ -222,7 +222,7 @@ class MetadataUtils:
 		return list(set([MetadataUtils.split_meta_value(meta, sep)[0] for meta in lst]))
 
 	@staticmethod
-	def get_meta_value(name, lst, sep='='):
+	def get_meta_value(name, lst, int_list, sep='='):
 		"""
 		Given a list of metadata{sep}value and given the name of a certain metadata return all values
 		of that metadata name
@@ -234,11 +234,22 @@ class MetadataUtils:
 		:param sep:
 		:return:
 		"""
-		ret = [MetadataUtils.split_meta_value(l, sep)[1] for l in lst if MetadataUtils.split_meta_value(l, sep)[0] == name]
-		if len(ret) > 1:
-			return ret
+
+		res = []
+		for l in lst:
+			key, value = MetadataUtils.split_meta_value(l, sep)
+			if key == name:
+				if name in int_list:
+					value = int(value)
+				elif value.upper() in ['FALSE','TRUE']:
+					value = eval(value.capitalize())
+
+				res.append(int(value) if name in int_list else value)
+
+		if len(res) > 1:
+			return res
 		else:
-			return ret[0]
+			return res[0]
 
 	@staticmethod
 	def get_clear_meta_dict(lst, blacklist=None, sep='=', array_list=None):
@@ -293,7 +304,7 @@ class MetadataUtils:
 		]
 
 		for l in metas:
-			val = MetadataUtils.get_meta_value(l, lst, sep=sep)
+			val = MetadataUtils.get_meta_value(l, lst, cols_number, sep=sep)
 			if l in cols_number:
 				val = int(val)
 			elif val.upper() in ['FALSE', 'TRUE']:
