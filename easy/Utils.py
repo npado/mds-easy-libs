@@ -70,7 +70,7 @@ class Utils:
 
 	@staticmethod
 	def remove_special_char(string, replace_char):
-		return re.sub('[^A-Za-z0-9 ]', replace_char, string)
+		return re.sub('[^A-Za-z0-9= ]', replace_char, string)
 
 	@staticmethod
 	def camel_case(string):
