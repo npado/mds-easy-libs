@@ -147,8 +147,8 @@ class MCMHelper:
 		:param sep:
 		:return: MCM dict augmented by Mythematics dict
 		"""
-		clear_meta_name = self.content_conf['ClearMetadata']
-		fing_name = self.content_conf['Fingerprint']
+		clear_meta_name = 'clear_metas'
+		fing_name = 'fingerprint'
 
 		blacklist_meta = self.content_conf['blacklist_metas']
 		blacklist_metavalue = self.content_conf['blacklist_metavalues']
