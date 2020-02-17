@@ -86,10 +86,10 @@ class Utils:
 			return string
 
 	@staticmethod
-	def compact_string(string):
-		return Utils.to_bool(
-			Utils.camel_case(Utils.remove_special_char(string.strip(), ' '))
-		)
+	def compact_string(string, to_bool):
+		camel_remove = lambda s: Utils.camel_case(Utils.remove_special_char(s.strip(), ' '))
+		compose = lambda s: (Utils.to_bool(camel_remove(s)) if to_bool else camel_remove(s))
+		return compose(string)
 
 	@staticmethod
 	def is_date(string, date_format='%Y-%m-%dT%H:%M:%SZ'):
@@ -104,11 +104,11 @@ class Utils:
 		return validators.url(string)
 
 	@staticmethod
-	def normalize_value(string):
+	def normalize_value(string, to_bool=True):
 		if Utils.is_url(string) or Utils.is_date(string):
 			return string
 		else:
-			return Utils.compact_string(string)
+			return Utils.compact_string(string, to_bool)
 
 	@staticmethod
 	def normalize_json(dct, key_blacklist=None):
@@ -121,9 +121,10 @@ class Utils:
 
 		for k, value in dct_blacklisted.items():
 			if isinstance(value, str):
-				dct[k] = Utils.normalize_value(value)
+				dct[k] = Utils.normalize_value(value, b)
 			elif isinstance(value, list):
-				dct[k] = [Utils.normalize_value(v) if isinstance(v, str) else v for v in value]
+				b = False if k == 'keyword' else True
+				dct[k] = [Utils.normalize_value(v, b) if isinstance(v, str) else v for v in value]
 			elif isinstance(value, dict):
 				dct[k] = Utils.normalize_json(value)
 		return dct
