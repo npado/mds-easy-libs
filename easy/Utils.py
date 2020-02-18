@@ -74,7 +74,9 @@ class Utils:
 
 	@staticmethod
 	def camel_case(string):
-		return ''.join([s.capitalize() for s in string.lower().split(' ')])
+		camel = ''.join([s.capitalize() for s in string.lower().split(' ')])
+		camel = camel[0].lower() + camel[1:]
+		return camel
 
 	@staticmethod
 	def to_bool(string):
