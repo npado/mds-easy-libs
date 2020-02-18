@@ -126,8 +126,7 @@ class Utils:
 			if isinstance(value, str):
 				dct[k] = Utils.normalize_value(value)
 			elif isinstance(value, list):
-				b = False if k == 'keyword' else True
-				dct[k] = [Utils.normalize_value(v, to_bool=b) if isinstance(v, str) else v for v in value]
+				dct[k] = [Utils.normalize_value(v, to_bool=False) if isinstance(v, str) else v for v in value]
 			elif isinstance(value, dict):
 				dct[k] = Utils.normalize_json(value)
 		return dct
@@ -252,7 +251,7 @@ class MetadataUtils:
 			if key == name:
 				if name in int_list:
 					value = int(value)
-				elif value.upper() in ['FALSE', 'TRUE']:
+				elif value.upper() in ['FALSE', 'TRUE'] and key != 'keyword':
 					value = eval(value.capitalize())
 
 				res.append(int(value) if name in int_list else value)
