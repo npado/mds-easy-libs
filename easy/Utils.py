@@ -144,7 +144,7 @@ class Utils:
 			key, value = key_value.split('=')
 			b = False if key == 'keyword' else True
 
-			if value in array_list:
+			if Utils.isin(value, array_list):
 				normalized_value = Utils.normalize_value(value, to_bool=b, to_camel=False)
 			else:
 				normalized_value = Utils.normalize_value(value, to_bool=b)
