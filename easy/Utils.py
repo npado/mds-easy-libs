@@ -69,14 +69,16 @@ class Utils:
 		return session
 
 	@staticmethod
-	def remove_special_char(string, replace_char):
-		return re.sub('[^A-Za-z0-9àèìòù= ]', replace_char, string)
+	def remove_special_char(string):
+		result = re.sub('[^A-Za-z0-9àèìòù= ]', ' ', string)
+		# remove extra space
+		return ' '.join(result.split())
 
-	@staticmethod
-	def camel_case(string):
-		camel = ''.join([s.capitalize() for s in string.lower().split(' ')])
-		camel = camel[0].lower() + camel[1:]
-		return camel
+	# @staticmethod
+	# def camel_case(string):
+	# 	camel = ''.join([s.capitalize() for s in string.lower().split(' ')])
+	# 	camel = camel[0].lower() + camel[1:]
+	# 	return camel
 
 	@staticmethod
 	def to_bool(string):
@@ -88,16 +90,9 @@ class Utils:
 			return string
 
 	@staticmethod
-	def compact_string(string, to_bool, to_camel):
-		to_camel_func = lambda s: (Utils.camel_case(s) if to_camel else s)
+	def compact_string(string, to_bool):
 		to_bool_func = lambda s: (Utils.to_bool(s) if to_bool else s)
-		replace_special_char = ' ' if to_camel else ''
-
-		return to_bool_func(
-			to_camel_func(
-				Utils.remove_special_char(string.strip(), replace_special_char)
-			)
-		)
+		return to_bool_func(Utils.remove_special_char(string.strip()))
 
 	@staticmethod
 	def is_date(string, date_format='%Y-%m-%dT%H:%M:%SZ'):
@@ -112,11 +107,11 @@ class Utils:
 		return validators.url(string)
 
 	@staticmethod
-	def normalize_value(string, to_bool=True, to_camel=True):
+	def normalize_value(string, to_bool=True):
 		if Utils.is_url(string) or Utils.is_date(string):
 			return string
 		else:
-			return Utils.compact_string(string, to_bool, to_camel)
+			return Utils.compact_string(string, to_bool)
 
 	@staticmethod
 	def normalize_json(dct, key_blacklist=None):
@@ -132,22 +127,18 @@ class Utils:
 				dct[k] = Utils.normalize_value(value)
 			elif isinstance(value, list):
 				b = False if k == 'keyword' else True
-				dct[k] = [Utils.normalize_value(v, to_bool=b, to_camel=False) if isinstance(v, str) else v for v in value]
+				dct[k] = [Utils.normalize_value(v, to_bool=b) if isinstance(v, str) else v for v in value]
 			elif isinstance(value, dict):
 				dct[k] = Utils.normalize_json(value)
 		return dct
 
 	@staticmethod
-	def normalize_clear_metas_list(clear_metas, array_list):
+	def normalize_clear_metas_list(clear_metas):
 		result = []
 		for key_value in clear_metas:
 			key, value = key_value.split('=')
 			b = False if key == 'keyword' else True
-
-			if Utils.isin(key, array_list):
-				normalized_value = Utils.normalize_value(value, to_bool=b, to_camel=False)
-			else:
-				normalized_value = Utils.normalize_value(value, to_bool=b)
+			normalized_value = Utils.normalize_value(value, to_bool=b)
 
 			result.append(f'{key}={normalized_value}')
 		return result
