@@ -181,7 +181,7 @@ class MCMHelper:
 		if mcm_js is None:
 			return None
 
-		mcm_js['mythematics-source'] = 'mythematics'
+		mcm_js['mythematics_source'] = 'mythematics'
 		return self.merge_mcm_mythem(mythem_js, mcm_js, common_metas, sep=sep)
 
 	def search_mcm_series_meta(self, series_id, mythem_js, common_metas, sep='='):
@@ -190,25 +190,25 @@ class MCMHelper:
 		if mcm_js is None:
 			return None
 
-		mcm_js['mythematics-source'] = 'mythematics-series'
+		mcm_js['mythematics_source'] = 'mythematics-series'
 		return self.merge_mcm_mythem(mythem_js, mcm_js, common_metas, sep=sep)
 
 	def search_mythematics_series(self, series_id, mcm_js, common_metas, sep='='):
 		mythem_js = self.read_mythem_series_js(series_id)
 		if mythem_js is None:
-			mcm_js['mythematics-source'] = 'mcm'
+			mcm_js['mythematics_source'] = 'mcm'
 			return mcm_js
 
-		mcm_js['mythematics-source'] = 'mythematics-series'
+		mcm_js['mythematics_source'] = 'mythematics-series'
 		return self.merge_mcm_mythem(mythem_js, mcm_js, common_metas, sep=sep)
 
 	def search_mythematics_season(self, season_id, mcm_js, common_metas, sep='='):
 		mythem_js = self.read_mythem_season_js(season_id)
 		if mythem_js is None:
-			mcm_js['mythematics-source'] = 'mcm'
+			mcm_js['mythematics_source'] = 'mcm'
 			return mcm_js
 
-		mcm_js['mythematics-source'] = 'mythematics-season'
+		mcm_js['mythematics_source'] = 'mythematics-season'
 		return self.merge_mcm_mythem(mythem_js, mcm_js, common_metas, sep=sep)
 
 	def search_mythematics_meta(self, fcode, mcm_js, common_metas, sep='='):
@@ -226,14 +226,14 @@ class MCMHelper:
 			if mythem_js is None:
 				mythem_js = None # self.read_mythem_series_js_from_fcode(fcode)
 				if mythem_js is None:
-					mcm_js['mythematics-source'] = 'mcm'
+					mcm_js['mythematics_source'] = 'mcm'
 					return mcm_js
 				else:
-					mcm_js['mythematics-source'] = 'mythematics-series'
+					mcm_js['mythematics_source'] = 'mythematics-series'
 			else:
-				mcm_js['mythematics-source'] = 'mythematics-season'
+				mcm_js['mythematics_source'] = 'mythematics-season'
 		else:
-			mcm_js['mythematics-source'] = 'mythematics'
+			mcm_js['mythematics_source'] = 'mythematics'
 
 		return self.merge_mcm_mythem(mythem_js, mcm_js, common_metas, sep=sep)
 
