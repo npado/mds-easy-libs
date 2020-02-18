@@ -88,10 +88,16 @@ class Utils:
 			return string
 
 	@staticmethod
-	def compact_string(string, to_bool):
-		camel_remove = lambda s: Utils.camel_case(Utils.remove_special_char(s.strip(), ' '))
-		compose = lambda s: (Utils.to_bool(camel_remove(s)) if to_bool else camel_remove(s))
-		return compose(string)
+	def compact_string(string, to_bool, to_camel):
+		to_camel_func = lambda s: (Utils.camel_case(s) if to_camel else s)
+		to_bool_func = lambda s: (Utils.to_bool(s) if to_bool else s)
+		replace_special_char = ' ' if to_camel else ''
+
+		return to_bool_func(
+			to_camel_func(
+				Utils.remove_special_char(string.strip(), replace_special_char)
+			)
+		)
 
 	@staticmethod
 	def is_date(string, date_format='%Y-%m-%dT%H:%M:%SZ'):
@@ -106,11 +112,11 @@ class Utils:
 		return validators.url(string)
 
 	@staticmethod
-	def normalize_value(string, to_bool=True):
+	def normalize_value(string, to_bool=True, to_camel=True):
 		if Utils.is_url(string) or Utils.is_date(string):
 			return string
 		else:
-			return Utils.compact_string(string, to_bool)
+			return Utils.compact_string(string, to_bool, to_camel)
 
 	@staticmethod
 	def normalize_json(dct, key_blacklist=None):
@@ -126,14 +132,25 @@ class Utils:
 				dct[k] = Utils.normalize_value(value)
 			elif isinstance(value, list):
 				b = False if k == 'keyword' else True
-				dct[k] = [Utils.normalize_value(v, b) if isinstance(v, str) else v for v in value]
+				dct[k] = [Utils.normalize_value(v, to_bool=b, to_camel=False) if isinstance(v, str) else v for v in value]
 			elif isinstance(value, dict):
 				dct[k] = Utils.normalize_json(value)
 		return dct
 
 	@staticmethod
-	def normalize_clear_metas_list(clear_metas):
-		return [f"{c.split('=')[0]}={Utils.normalize_value(c.split('=')[1])}" for c in clear_metas]
+	def normalize_clear_metas_list(clear_metas, array_list):
+		result = []
+		for key_value in clear_metas:
+			key, value = key_value.split('=')
+			b = False if key == 'keyword' else True
+
+			if value in array_list:
+				normalized_value = Utils.normalize_value(value, to_bool=b, to_camel=False)
+			else:
+				normalized_value = Utils.normalize_value(value, to_bool=b)
+
+			result.append(f'{key}={normalized_value}')
+		return result
 
 
 class S3Utils:
