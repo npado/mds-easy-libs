@@ -132,10 +132,10 @@ class Utils:
 		return dct
 
 	@staticmethod
-	def normalize_clear_metas_list(clear_metas):
+	def normalize_clear_metas_list(clear_metas, sep='='):
 		result = []
 		for key_value in clear_metas:
-			key, value = key_value.split('=')
+			key, value = MetadataUtils.split_meta_value(key_value, sep)
 			b = False if key == 'keyword' else True
 			normalized_value = Utils.normalize_value(value, to_bool=b)
 
