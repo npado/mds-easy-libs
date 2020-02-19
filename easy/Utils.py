@@ -70,7 +70,7 @@ class Utils:
 
 	@staticmethod
 	def remove_special_char(string):
-		result = re.sub('[^A-Za-z0-9àèìòù= ]', ' ', string)
+		result = re.sub('[^A-Za-z0-9àèéìòù= ]', ' ', string)
 		# remove extra space
 		return ' '.join(result.split())
 

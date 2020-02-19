@@ -1,7 +1,7 @@
 import logging
 import json
 
-from easy.Utils import S3Utils, MetadataUtils
+from easy.Utils import S3Utils, MetadataUtils, Utils
 
 
 class MCMHelper:
@@ -160,7 +160,7 @@ class MCMHelper:
 
 		clear_meta_merged = [
 			m for m in clear_meta_merged
-			if m[:m.index(sep)] not in blacklist_meta and m[m.index(sep)+1:] not in blacklist_metavalue
+			if not Utils.isin(m[:m.index(sep)], blacklist_meta) and not Utils.isin(m[m.index(sep)+1:], blacklist_metavalue)
 		]
 
 		mcm_dict[clear_meta_name] = clear_meta_merged
