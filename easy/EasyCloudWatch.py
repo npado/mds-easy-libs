@@ -11,7 +11,7 @@ class EasyCloudWatch:
 			session = boto3.Session(profile_name=profile_name)
 			self.logs = session.client('logs')
 		else:
-			self.logs = boto3.client('logs')
+			self.logs = boto3.client('logs', region_name='eu-west-1')
 
 		self.next_token = None
 		try:
