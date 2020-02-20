@@ -3,7 +3,7 @@ import time
 
 
 class EasyCloudWatch:
-	def __init__(self, log_group, log_stream, profile_name=None):
+	def __init__(self, log_group, log_stream, retention_in_days=365, profile_name=None):
 		self.log_group = log_group
 		self.log_stream = log_stream
 
@@ -13,28 +13,45 @@ class EasyCloudWatch:
 		else:
 			self.logs = boto3.client('logs')
 
+		self.next_token = None
 		try:
-			log_group_description = self.logs.describe_log_streams(
+			self.logs.create_log_group(logGroupName=self.log_group)
+		except self.logs.exceptions.ResourceAlreadyExistsException:
+			pass
+		else:
+			self.logs.put_retention_policy(
+				logGroupName=self.log_group,
+				retentionInDays=retention_in_days
+			)
+
+		try:
+			self.logs.create_log_stream(logGroupName=self.log_group, logStreamName=self.log_stream)
+		except self.logs.exceptions.ResourceAlreadyExistsException:
+			log_stream_list = self.logs.describe_log_streams(
 				logGroupName=self.log_group,
 				logStreamNamePrefix=self.log_stream
-			)
-			self.next_token = log_group_description['logStreams'][0]['uploadSequenceToken']
-		except self.logs.exceptions.ResourceNotFoundException:
-			self.next_token = None
+			)['logStreams']
+			for ls in log_stream_list:
+				if ls['logStreamName'] == self.log_stream:
+					self.next_token = ls.get('uploadSequenceToken')
+					break
 
 	def put_log_events(self, message):
 		timestamp = int(round(time.time() * 1000))
 		datetime_str = time.strftime('%Y-%m-%d %H:%M:%S')
-		response = self.logs.put_log_events(
+
+		put_log_args = dict(
 			logGroupName=self.log_group,
 			logStreamName=self.log_stream,
 			logEvents=[
-				{
-					'timestamp': timestamp,
-					'message': f'{datetime_str}\t{message}'
-				}
-			],
+					{
+						'timestamp': timestamp,
+						'message': f'{datetime_str}\t{message}'
+					}
+				],
 			sequenceToken=self.next_token
 		)
+
+		response = self.logs.put_log_events(**{k: v for k, v in put_log_args.items() if v is not None})
 		self.next_token = response['nextSequenceToken']
 		return response
