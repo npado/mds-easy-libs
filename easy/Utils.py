@@ -157,7 +157,7 @@ class S3Utils:
 		return w_obj.put(Body=str_file)
 
 	@staticmethod
-	def read_s3_file(s3, bucket, key):
+	def read_s3_file(s3, bucket, key, encoding='utf-8'):
 		"""
 		return a json from s3 as a dictionary
 		:param s3: s3 object
@@ -167,7 +167,7 @@ class S3Utils:
 		"""
 		try:
 			s3_obj = s3.Object(bucket, key).get()
-			js_string = s3_obj['Body'].read().decode('utf-8')
+			js_string = s3_obj['Body'].read().decode(encoding)
 		except Exception as e:
 			error_msg = f'exception: {e} - file {bucket}/{key} not found'
 			raise FileNotFoundError(error_msg)
