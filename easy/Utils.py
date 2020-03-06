@@ -174,6 +174,8 @@ class S3Utils:
 		except botocore.exceptions.ClientError as e:
 			if e.response['Error']['Code'].lower() in ['nosuchbucket', 'nosuchkey']:
 				raise FileNotFoundError(f'File {bucket}/{key} not found: {e}')
+			else:
+				raise e
 		except Exception as e:
 			error_msg = f'Generic exception: {e} - Cannot read {bucket}/{key}'
 			raise Exception(error_msg)
