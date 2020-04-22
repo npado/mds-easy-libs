@@ -158,12 +158,12 @@ class MCMHelper:
 
 		clear_meta_merged = MetadataUtils.merge_lst(common_metas, mcm_clear_meta, mythem_clear_meta, sep=sep)
 
-		mcm_dict[clear_meta_name] = clear_meta_merged
-
-		clear_meta_merged_blacklisted = [
+		clear_meta_merged = [
 			m for m in clear_meta_merged
 			if not Utils.isin(m[:m.index(sep)], blacklist_meta) and not Utils.isin(m[m.index(sep)+1:], blacklist_metavalue)
 		]
+
+		mcm_dict[clear_meta_name] = clear_meta_merged
 
 		# idserie, numeroepisodi, numerostagioni non sono presenti in MCM e lo prendiamo da Mythematics
 		# NOTA: MCM+Mythematics vengono logicamente divisi in due parti: una che contiene
@@ -173,7 +173,7 @@ class MCMHelper:
 
 		mcm_dict = MCMHelper.get_myth_info_metas(mcm_dict, mythem_dict)
 
-		mcm_dict[fing_name] = MetadataUtils.hashing_meta(clear_meta_merged_blacklisted, key_value_sep=sep)
+		mcm_dict[fing_name] = MetadataUtils.hashing_meta(clear_meta_merged, key_value_sep=sep)
 		return mcm_dict
 
 	def search_mcm_season_meta(self, fcode, mythem_js, common_metas, sep='='):
