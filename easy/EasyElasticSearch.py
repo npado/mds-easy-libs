@@ -11,8 +11,7 @@ class EasyElasticSearch:
 			boto_session=None,
 			region='eu-west-1',
 			profile_name=None,
-			maxsize=30,
-			**kwargs
+			maxsize=30
 	):
 		boto_session = boto3.Session(profile_name=profile_name) if boto_session is None else boto_session
 		credentials = boto_session.get_credentials()
@@ -33,8 +32,7 @@ class EasyElasticSearch:
 			use_ssl=True,
 			verify_certs=True,
 			connection_class=RequestsHttpConnection,
-			maxsize=maxsize,
-			**kwargs
+			maxsize=maxsize
 		)
 
 	def get_elastic_client(self):
