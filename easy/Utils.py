@@ -176,9 +176,6 @@ class S3Utils:
 				raise FileNotFoundError(f'File {bucket}/{key} not found: {e}')
 			else:
 				raise e
-		except Exception as e:
-			error_msg = f'Generic exception: {e} - Cannot read {bucket}/{key}'
-			raise Exception(error_msg)
 
 	@staticmethod
 	def json_already_exists(s3, json_result, s3_bucket, s3_key, drop=None):
