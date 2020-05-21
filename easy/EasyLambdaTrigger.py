@@ -15,7 +15,8 @@ class EasyLambdaTrigger:
 		self.lambda_client = boto3.client(service_name='lambda', region_name=region_name)
 
 	def get_event_sources(self):
-		return self.lambda_client.list_event_source_mappings(FunctionName=self.lambda_name)['EventSourceMappings']
+		event_source_mapping = self.lambda_client.list_event_source_mappings(FunctionName=self.lambda_name)
+		return event_source_mapping['EventSourceMappings']
 
 	def get_event_sources_uuid(self):
 		return [e['UUID'] for e in self.get_event_sources()]
@@ -64,4 +65,5 @@ class EasyLambdaTrigger:
 			if current_state == state:
 				return current_state
 			elif time.time() - start_time > timeout:
-				raise TimeoutError(f'Timeout {timeout}secs reached. Cannot wait anymore: increase timeout value')
+				error_msg = f'Timeout {timeout} secs reached. Cannot wait anymore: increase timeout value'
+				raise TimeoutError(error_msg)
