@@ -200,7 +200,7 @@ class S3Utils:
 				s3_key,
 				drop=drop
 		) or write_anyway:
-			S3Utils.write_s3_file(s3, s3_bucket, s3_key, json.dumps(json_result, ensure_ascii=False))
+			S3Utils.write_s3_file(s3, s3_bucket	, s3_key, json.dumps(json_result, ensure_ascii=False))
 			return True
 		return False
 
