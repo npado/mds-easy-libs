@@ -227,7 +227,6 @@ class MetadataUtils:
 			>>> lst = ['attore=terence', 'attore=bud', 'regista=leone', 'genere=western']
 			>>> MetadataUtils.get_unique_metas(lst, '=')
 			>>> ['attore','regista','genere']
-
 		:param lst: the list of metadata=key
 		:param sep: a separator
 		:return: list of distinct metadata
@@ -284,14 +283,12 @@ class MetadataUtils:
 			Se lo vogliamo eliminare prima di fare una semplice UNIONE tra il clear_meta di Mythematics
 			con quello di MCM bisogna fare attenzione al fatto che ci deve
 			essere una precedenza di Mythematics rispetto a MCM.
-
 		Given a list of metadata{sep}value return a dictionary whose keys are the
 		unique metadata in list grouped by their values
 			>>> lst = ['attore=terence', 'attore=bud', 'regista=leone', 'genere=western', 'anno=1970']
 			>>> blacklist = ['genere', 'regista']
 			>>> MetadataUtils.get_clear_meta_dict(lst, blacklist, '=')
 			>>> { "attore": ['terence', 'bud'], "anno": "1970"}
-
 		:param lst:
 		:param blacklist:
 		:param sep:
@@ -333,7 +330,6 @@ class MetadataUtils:
 			>>> clear_meta = ['attore=terence', 'attore=bud', 'regista=e.b clucher']
 			>>> MetadataUtils.del_items_from_clearmeta('attore',clear_meta)
 			>>> ['regista=e.b clucher']
-
 		:param key:
 		:param lst:
 		:param sep:
@@ -366,7 +362,6 @@ class MetadataUtils:
 		Given a list of common_metas (i.e. metadata in common between mcm and mythematics),
 		this method remove the item from MCM data if it is present also in mythematics data.
 		At the end, return a sorted merged (mythem+mcm) list of clearmeta
-
 		>>> common_metas = ['genere','anno']
 		>>> mcm_clearmeta = ['genere=western', 'attore=terence', 'anno=1974']
 		>>> mythem_clearmeta = ['genere=comedy', 'attore=terence', 'regista=leone']
@@ -375,7 +370,6 @@ class MetadataUtils:
 		>>> # genere=comedy taken from Mythematics, attore=terence obtained from list(set(.))
 		>>> # regista=leone taken from Mythematics, anno=1974 taken from MCM because
 		>>> # there is no 'anno' in mythematics
-
 		:param common_metas:
 		:param mcm_clearmeta:
 		:param mythem_clearmeta:
