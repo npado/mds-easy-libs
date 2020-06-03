@@ -19,5 +19,8 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
-    install_requires=['slackclient>=2.1.0', 'boto3', 'requests', 'urllib3', 'validators']
+    install_requires=[
+        'slackclient>=2.1.0', 'boto3', 'botocore',
+        'requests', 'urllib3', 'validators', 'requests_aws4auth', 'elasticsearch'
+    ]
 )

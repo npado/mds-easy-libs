@@ -7,6 +7,7 @@ from urllib3.util.retry import Retry
 import re
 import datetime
 import validators
+import botocore
 
 
 class Utils:
@@ -163,16 +164,18 @@ class S3Utils:
 		:param s3: s3 object
 		:param bucket: s3 bucket
 		:param key: s3 key (with the specified json)
+		:param encoding: how to decode byte read
 		:return: a dictionary created from the json
 		"""
 		try:
 			s3_obj = s3.Object(bucket, key).get()
 			js_string = s3_obj['Body'].read().decode(encoding)
-		except Exception as e:
-			error_msg = f'exception: {e} - file {bucket}/{key} not found'
-			raise FileNotFoundError(error_msg)
-
-		return js_string
+			return js_string
+		except botocore.exceptions.ClientError as e:
+			if e.response['Error']['Code'].lower() in ['nosuchbucket', 'nosuchkey']:
+				raise FileNotFoundError(f'File {bucket}/{key} not found: {e}')
+			else:
+				raise e
 
 	@staticmethod
 	def json_already_exists(s3, json_result, s3_bucket, s3_key, drop=None):
@@ -189,15 +192,15 @@ class S3Utils:
 			return False
 
 	@staticmethod
-	def write_json_if_toupdate(s3, json_result, s3_bucket, s3_key, drop=None):
+	def write_json_if_toupdate(s3, json_result, s3_bucket, s3_key, drop=None, write_anyway=False):
 		if not S3Utils.json_already_exists(
 				s3,
 				json_result,
 				s3_bucket,
 				s3_key,
 				drop=drop
-		):
-			S3Utils.write_s3_file(s3, s3_bucket, s3_key, json.dumps(json_result, ensure_ascii=False))
+		) or write_anyway:
+			S3Utils.write_s3_file(s3, s3_bucket	, s3_key, json.dumps(json_result, ensure_ascii=False))
 			return True
 		return False
 
