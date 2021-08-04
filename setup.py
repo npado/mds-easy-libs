@@ -21,6 +21,6 @@ setuptools.setup(
     python_requires='>=3.6',
     install_requires=[
         'slackclient>=2.1.0', 'boto3', 'botocore',
-        'requests', 'urllib3', 'validators', 'requests_aws4auth', 'elasticsearch'
+        'requests', 'urllib3', 'validators', 'requests_aws4auth', 'elasticsearch==7.13.2'
     ]
 )
