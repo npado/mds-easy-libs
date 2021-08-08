@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="mds-easy-libs",
-    version="0.0.1",
+    version="0.0.2",
     author="Nicola Padovano",
     author_email="nicola.padovano@mediaset.it",
     description="Mediaset Easy Libraries",
