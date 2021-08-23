@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="mds-easy-libs",
-    version="0.0.1",
+    version="0.0.2",
     author="Nicola Padovano",
     author_email="nicola.padovano@mediaset.it",
     description="Mediaset Easy Libraries",
@@ -21,6 +21,6 @@ setuptools.setup(
     python_requires='>=3.6',
     install_requires=[
         'slackclient>=2.1.0', 'boto3', 'botocore',
-        'requests', 'urllib3', 'validators', 'requests_aws4auth', 'elasticsearch'
+        'requests', 'urllib3', 'validators', 'requests_aws4auth', 'elasticsearch==7.13.2'
     ]
 )
